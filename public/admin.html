@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>لوحة التحكم الإدارية | مؤسسة غزة للإغاثة</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><circle cx=%2224%22 cy=%2224%22 r=%2220%22 fill=%22%23006848%22/><circle cx=%2224%22 cy=%2224%22 r=%2210%22 fill=%22%23F59E0B%22/></svg>">
+  <style>
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .kpi-item {
+      background: #ffffff;
+      border-radius: var(--mk-radius-md);
+      border: 1px solid var(--mk-border);
+      padding: 22px;
+      box-shadow: var(--mk-shadow-sm);
+    }
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--mk-green);
+      margin-top: 6px;
+    }
+    .data-table-wrap {
+      overflow-x: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--mk-border);
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 14px;
+    }
+    table.data-table th, table.data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--mk-border);
+    }
+    table.data-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--mk-text);
+    }
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body style="background:#f8f7f2;">
+  <header class="site-header">
+    <div class="container nav-inner" style="height:68px;">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-emblem" style="width:40px; height:40px;">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" fill="#006848"/>
+            <path d="M24 12c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12-5.37-12-12-12z" fill="#F59E0B"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 style="font-size:16px;">مؤسسة غزة للإغاثة والتنمية</h1>
+          <span>لوحة الإدارة والرقابة المالية</span>
+        </div>
+      </a>
+      <div style="display:flex; gap:10px;">
+        <a href="/api/admin/export-csv" class="btn-donate-header" style="background:var(--mk-green); border:1px solid #ffffff; font-size:13px; padding:6px 14px;">تصدير CSV</a>
+        <button type="button" id="logoutBtn" class="btn-donate-header" style="background:#ef4444; font-size:13px; padding:6px 14px;">تسجيل الخروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:36px; margin-bottom:60px;">
+    <!-- KPI Summary Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-item">
+        <span style="font-size:13px; color:var(--mk-text-muted); font-weight:600;">إجمالي التبرعات المكتملة</span>
+        <div class="kpi-val" id="kpiTotal">0 ج.م</div>
+      </div>
+      <div class="kpi-item">
+        <span style="font-size:13px; color:var(--mk-text-muted); font-weight:600;">العمليات الناجحة</span>
+        <div class="kpi-val" id="kpiCompleted">0</div>
+      </div>
+      <div class="kpi-item">
+        <span style="font-size:13px; color:var(--mk-text-muted); font-weight:600;">عمليات قيد المراجعة</span>
+        <div class="kpi-val" id="kpiPending" style="color:var(--mk-amber);">0</div>
+      </div>
+      <div class="kpi-item">
+        <span style="font-size:13px; color:var(--mk-text-muted); font-weight:600;">الحالات الإغاثية النشطة</span>
+        <div class="kpi-val" id="kpiCampaigns">0</div>
+      </div>
+    </div>
+
+    <!-- Payment Gateways Status -->
+    <div style="background:#ffffff; border-radius:16px; border:1px solid var(--mk-border); padding:24px; margin-bottom:28px;">
+      <h2 style="font-size:18px; font-weight:800; color:var(--mk-text); margin-bottom:14px;">حالة بوابات الدفع الإلكتروني</h2>
+      <div id="gatewaysStatus" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;"></div>
+    </div>
+
+    <!-- Campaigns Management -->
+    <div style="background:#ffffff; border-radius:16px; border:1px solid var(--mk-border); padding:24px; margin-bottom:28px;">
+      <h2 style="font-size:18px; font-weight:800; color:var(--mk-text); margin-bottom:14px;">إضافة حالة أو مشروع إغاثي جديد</h2>
+      <form id="newCampaignForm" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:20px; padding:16px; background:#f8fafc; border-radius:10px;">
+        <input type="text" id="newCmpTitle" class="form-input" placeholder="عنوان الحملة" required>
+        <input type="text" id="newCmpCategory" class="form-input" placeholder="التصنيف (مثال: كسوة)" required>
+        <input type="number" id="newCmpTarget" class="form-input" placeholder="المبلغ المستهدف (ج.م)" min="10" required>
+        <input type="text" id="newCmpSummary" class="form-input" placeholder="وصف موجز للمشروع" required>
+        <button type="submit" class="hero-cta-btn" style="border-radius:8px; justify-content:center; font-size:14.5px;">+ حفظ الحملة</button>
+      </form>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>المشروع / الحملة</th>
+              <th>التصنيف</th>
+              <th>تم جمعه</th>
+              <th>الهدف</th>
+              <th>الحالة</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody id="adminCampaignsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div style="background:#ffffff; border-radius:16px; border:1px solid var(--mk-border); padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 style="font-size:18px; font-weight:800; color:var(--mk-text);">سجل التبرعات والمعاملات</h2>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="quick-btn active" data-filter="all" style="height:36px; min-width:60px; font-size:13px;">الكل</button>
+          <button type="button" class="quick-btn" data-filter="completed" style="height:36px; min-width:70px; font-size:13px;">المكتملة</button>
+          <button type="button" class="quick-btn" data-filter="pending" style="height:36px; min-width:70px; font-size:13px;">قيد الانتظار</button>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>رقم المعاملة</th>
+              <th>الحالة</th>
+              <th>المتبرع</th>
+              <th>المبلغ</th>
+              <th>بوابة الدفع</th>
+              <th>حالة العملية</th>
+              <th>التاريخ</th>
+            </tr>
+          </thead>
+          <tbody id="adminTxBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320">
+  <defs>
+    <linearGradient id="bgMedical" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="320" fill="url(#bgMedical)"/>
+  <rect x="215" y="75" width="170" height="170" rx="28" fill="#ffffff" fill-opacity="0.92"/>
+  <rect x="282" y="105" width="36" height="110" rx="8" fill="#0f766e"/>
+  <rect x="245" y="142" width="110" height="36" rx="8" fill="#0f766e"/>
+</svg>

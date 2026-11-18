@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>تأكيد التبرع | مؤسسة غزة للإغاثة</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><circle cx=%2224%22 cy=%2224%22 r=%2220%22 fill=%22%23006848%22/><circle cx=%2224%22 cy=%2224%22 r=%2210%22 fill=%22%23F59E0B%22/></svg>">
+</head>
+<body style="background:#f8f7f2;">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-inner" style="height:68px;">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-emblem" style="width:40px; height:40px;">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" fill="#006848"/>
+            <path d="M24 12c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12-5.37-12-12-12z" fill="#F59E0B"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 style="font-size:16px;">مؤسسة غزة للإغاثة</h1>
+          <span>بوابة تأكيد المساهمة الإلكترونية</span>
+        </div>
+      </a>
+      <a href="/" class="btn-donate-header" style="padding:6px 16px; font-size:13px;">العودة للرئيسية</a>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:540px; margin-top:50px; margin-bottom:60px;">
+    <div style="background:#ffffff; border-radius:16px; border:1px solid var(--mk-border); padding:32px; box-shadow:var(--mk-shadow-md);">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div style="width:64px; height:64px; background:var(--mk-green-light); color:var(--mk-green); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:12px;">
+          🤝
+        </div>
+        <h1 style="font-size:22px; font-weight:800; color:var(--mk-text);">مراجعة وتأكيد التبرع</h1>
+        <p style="font-size:14px; color:var(--mk-text-muted); margin-top:4px;">جزاك الله خيراً.. مساهمتك في طريقها لإغاثة إخوانك في غزة</p>
+      </div>
+
+      <div id="sbxError" style="display:none; padding:12px; border-radius:8px; background:#fee2e2; color:#dc2626; font-size:14px; margin-bottom:16px;"></div>
+
+      <div style="background:#f8fafc; border-radius:12px; border:1px solid var(--mk-border); padding:18px; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14.5px;">
+          <span style="color:var(--mk-text-muted);">الحالة الإغاثية:</span>
+          <strong id="sbxCampaign" style="color:var(--mk-text);">-</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:14.5px;">
+          <span style="color:var(--mk-text-muted);">مبلغ التبرع:</span>
+          <strong id="sbxAmount" style="color:var(--mk-green); font-size:18px;">-</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:14.5px;">
+          <span style="color:var(--mk-text-muted);">وسيلة الدفع:</span>
+          <strong id="sbxGateway" style="color:var(--mk-amber); font-weight:800;">-</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <button type="button" id="confirmPayBtn" class="hero-cta-btn" style="width:100%; border-radius:10px; justify-content:center;">
+          تأكيد التبرع الآن
+        </button>
+        <button type="button" id="cancelPayBtn" onclick="window.location.href='/'" style="width:100%; height:46px; border:1.5px solid var(--mk-border); background:#ffffff; border-radius:10px; font-size:15px; font-weight:700; color:var(--mk-text-muted); cursor:pointer;">
+          إلغاء والعودة للرئيسية
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (async function() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const token = params.get('token');
+      const errBox = document.getElementById('sbxError');
+      const confirmBtn = document.getElementById('confirmPayBtn');
+
+      if (!id || !token) {
+        errBox.textContent = 'رابط التبرع غير مكتمل أو منتهي الصلاحية';
+        errBox.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/donations/receipt?id=' + encodeURIComponent(id) + '&token=' + encodeURIComponent(token));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'تعذر التحقق من بيانات العملية');
+
+        document.getElementById('sbxCampaign').textContent = data.receipt.campaignTitle;
+        document.getElementById('sbxAmount').textContent = Number(data.receipt.amount).toLocaleString('en-US') + ' ج.م';
+        document.getElementById('sbxGateway').textContent = data.receipt.gateway.toUpperCase();
+      } catch (err) {
+        errBox.textContent = err.message;
+        errBox.style.display = 'block';
+      }
+
+      confirmBtn.addEventListener('click', async () => {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'جاري تأكيد التبرع...';
+
+        try {
+          const resp = await fetch('/api/donations/sandbox-confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ transactionId: id, receiptToken: token, action: 'confirm' })
+          });
+          const result = await resp.json();
+          if (resp.ok && result.redirectUrl) {
+            window.location.href = result.redirectUrl;
+          } else {
+            throw new Error(result.error || 'تعذر إتمام العملية');
+          }
+        } catch (err) {
+          errBox.textContent = err.message;
+          errBox.style.display = 'block';
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'تأكيد التبرع الآن';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

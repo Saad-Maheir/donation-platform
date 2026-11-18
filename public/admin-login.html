@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>دخول لوحة التحكم | مؤسسة غزة للإغاثة</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><circle cx=%2224%22 cy=%2224%22 r=%2220%22 fill=%22%23006848%22/><circle cx=%2224%22 cy=%2224%22 r=%2210%22 fill=%22%23F59E0B%22/></svg>">
+</head>
+<body style="background:#f8f7f2;">
+  <header class="site-header">
+    <div class="container nav-inner" style="height:68px;">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-emblem" style="width:40px; height:40px;">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" fill="#006848"/>
+            <path d="M24 12c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12-5.37-12-12-12z" fill="#F59E0B"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 style="font-size:16px;">مؤسسة غزة للإغاثة والتنمية</h1>
+          <span>بوابة الإدارة والرقابة المالية</span>
+        </div>
+      </a>
+      <a href="/" class="btn-donate-header" style="padding:6px 16px; font-size:13px;">العودة للمنصة</a>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:440px; margin-top:50px; margin-bottom:60px;">
+    <div style="background:#ffffff; border-radius:16px; border:1px solid var(--mk-border); padding:32px; box-shadow:var(--mk-shadow-md);">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div style="width:60px; height:60px; background:var(--mk-green-light); color:var(--mk-green); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:12px;">
+          🔒
+        </div>
+        <h1 style="font-size:22px; font-weight:800; color:var(--mk-text);">دخول لوحة التحكم</h1>
+        <p style="font-size:13.5px; color:var(--mk-text-muted); margin-top:4px;">منطقة مصرح بها لمتابعة التبرعات وتقارير الإغاثة</p>
+      </div>
+
+      <div id="loginError" style="display:none; padding:12px; border-radius:8px; background:#fee2e2; color:#dc2626; font-size:13.5px; margin-bottom:16px;"></div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label class="form-label" for="adminUser">اسم المستخدم</label>
+          <input type="text" id="adminUser" class="form-input" autocomplete="username" value="admin" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminPass">كلمة المرور</label>
+          <input type="password" id="adminPass" class="form-input" autocomplete="current-password" value="Admin@2026!" required>
+        </div>
+
+        <button type="submit" class="hero-cta-btn" style="width:100%; border-radius:10px; justify-content:center; margin-top:10px;">
+          تسجيل الدخول
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

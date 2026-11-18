@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin-login",
+      "destination": "/admin-login.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/campaign",
+      "destination": "/campaign.html"
+    },
+    {
+      "source": "/checkout-secure",
+      "destination": "/checkout-secure.html"
+    },
+    {
+      "source": "/receipt",
+      "destination": "/receipt.html"
+    }
+  ]
+}
